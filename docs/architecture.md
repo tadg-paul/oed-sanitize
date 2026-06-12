@@ -1,4 +1,4 @@
-<!-- Version: 1.0 | Last updated: 2026-03-29 -->
+<!-- Version: 1.1 | Last updated: 2026-06-12 -->
 
 # Architecture
 
@@ -104,10 +104,23 @@ Simple character/string replacements:
 |-------|--------|-------------|
 | `\u201c` `\u201d` | `"` | Smart double quotes → straight |
 | `\u2018` `\u2019` | `'` | Smart single quotes → straight |
-| `\u2014` | `-` | Em dash → hyphen |
-| `\u2013` | `-` | En dash → hyphen |
+| `\u2014` | `---` | Em dash → Pandoc-style ASCII dash |
+| `\u2013` | `--` | En dash → Pandoc-style ASCII dash |
 | `\u2026` | `...` | Ellipsis → three dots |
-| `\u2192` | `->` | Arrow → ASCII arrow |
+| `\u2190` | `<-` | Left arrow → ASCII arrow |
+| `\u2192` | `->` | Right arrow → ASCII arrow |
+| `\u2194` | `<->` | Left-right arrow → ASCII arrow |
+| `\u21d2` | `=>` | Right double arrow → ASCII arrow |
+| `\u21d0` | `<=` | Left double arrow → ASCII arrow |
+| `\u21d4` | `<=>` | Left-right double arrow → ASCII arrow |
+| `\u27f5` | `<--` | Long left arrow → ASCII arrow |
+| `\u27f6` | `-->` | Long right arrow → ASCII arrow |
+| `\u27f7` | `<-->` | Long left-right arrow → ASCII arrow |
+| `\u27f8` | `<==` | Long left double arrow → ASCII arrow |
+| `\u27f9` | `==>` | Long right double arrow → ASCII arrow |
+| `\u27fa` | `<==>` | Long left-right double arrow → ASCII arrow |
+| `\u21a6` | `\|->` | Right mapsto arrow → ASCII arrow |
+| `\u21a4` | `<-\|` | Left mapsto arrow → ASCII arrow |
 | `\u2022` (at line start) | `- ` | Bullet → hyphen list item |
 
 ## Embedding
@@ -159,3 +172,7 @@ oed-sanitize/
 ├── CLAUDE.md                   # Claude Code project instructions
 └── README.md
 ```
+
+## Changelog
+
+- 1.1 (2026-06-12): Documented Pandoc-style dash output and expanded horizontal arrow mappings.
