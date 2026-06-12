@@ -23,14 +23,27 @@ var charReplacements = []struct {
 	old string
 	new string
 }{
-	{"\u201c", `"`},  // left double quote
-	{"\u201d", `"`},  // right double quote
-	{"\u2018", "'"},  // left single quote
-	{"\u2019", "'"},  // right single quote
+	{"\u201c", `"`},    // left double quote
+	{"\u201d", `"`},    // right double quote
+	{"\u2018", "'"},    // left single quote
+	{"\u2019", "'"},    // right single quote
 	{"\u2014", "---"},  // em dash
-	{"\u2013", "--"},  // en dash
-	{"\u2026", "..."}, // ellipsis
-	{"\u2192", "->"},  // arrow
+	{"\u2013", "--"},   // en dash
+	{"\u2026", "..."},  // ellipsis
+	{"\u2190", "<-"},   // left arrow
+	{"\u2192", "->"},   // right arrow
+	{"\u2194", "<->"},  // left-right arrow
+	{"\u21d2", "=>"},   // right double arrow
+	{"\u21d0", "<="},   // left double arrow
+	{"\u21d4", "<=>"},  // left-right double arrow
+	{"\u27f5", "<--"},  // long left arrow
+	{"\u27f6", "-->"},  // long right arrow
+	{"\u27f7", "<-->"}, // long left-right arrow
+	{"\u27f8", "<=="},  // long left double arrow
+	{"\u27f9", "==>"},  // long right double arrow
+	{"\u27fa", "<==>"}, // long left-right double arrow
+	{"\u21a6", "|->"},  // right mapsto
+	{"\u21a4", "<-|"},  // left mapsto
 }
 
 // SymbolEngine tracks replacement counts for symbol sanitization.
