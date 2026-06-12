@@ -28,12 +28,12 @@ func TestSymbols_SmartQuotes_ConvertToStraight_RT019(t *testing.T) {
 	}
 }
 
-// RT-020: em dash and en dash → hyphen
+// RT-020: em dash and en dash → Pandoc-style ASCII hyphens
 func TestSymbols_Dashes_ConvertToHyphen_RT020(t *testing.T) {
 	engine := NewSymbolEngine()
 
 	got := engine.ProcessLine("word\u2014word and 1\u20132")
-	want := "word-word and 1-2"
+	want := "word---word and 1--2"
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}

@@ -745,3 +745,120 @@ func TestCLI_OrgSrcBlockCaseInsensitive_RT10_12(t *testing.T) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
+
+// --- Issue #14: expanded symbol arrow mappings ---
+
+func runSymbols(t *testing.T, input string) (string, string) {
+	t.Helper()
+	bin := binaryPath(t)
+	cmd := exec.Command(bin, "symbols")
+	cmd.Stdin = strings.NewReader(input)
+
+	var stderr strings.Builder
+	cmd.Stderr = &stderr
+
+	out, err := cmd.Output()
+	if err != nil {
+		t.Fatalf("command failed: %v", err)
+	}
+	return string(out), stderr.String()
+}
+
+// RT-14.1: Short horizontal arrows are transliterated to ASCII notation
+// User action: pipe text containing short Unicode arrows through `sanitize symbols`
+// User observes: stdout contains ASCII arrow notation for each short arrow
+func TestCLI_SymbolsShortArrows_ASCIIOutput_RT14_1(t *testing.T) {
+	got, _ := runSymbols(t, "\u2190 \u2192 \u2194 \u21d2 \u21d0 \u21d4\n")
+	want := "<- -> <-> => <= <=>\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-14.2: Long and mapsto horizontal arrows are transliterated to ASCII notation
+// User action: pipe text containing long and mapsto Unicode arrows through `sanitize symbols`
+// User observes: stdout contains ASCII arrow notation for each long and mapsto arrow
+func TestCLI_SymbolsLongAndMapstoArrows_ASCIIOutput_RT14_2(t *testing.T) {
+	got, _ := runSymbols(t, "\u27f5 \u27f6 \u27f7 \u27f8 \u27f9 \u27fa \u21a6 \u21a4\n")
+	want := "<-- --> <--> <== ==> <==> |-> <-|\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-14.3: Multiple arrow forms retain surrounding text and report replacement count
+// User action: pipe prose containing several Unicode arrows through `sanitize symbols`
+// User observes: stdout preserves surrounding text and stderr reports one symbol replacement per arrow
+func TestCLI_SymbolsMixedArrows_TextAndCount_RT14_3(t *testing.T) {
+	got, stderr := runSymbols(t, "start \u2190 middle \u21d2 end \u27f7 done\n")
+	want := "start <- middle => end <--> done\n"
+	if got != want {
+		t.Errorf("stdout: got %q, want %q", got, want)
+	}
+
+	lines := summaryLines(stderr)
+	if len(lines) != 1 {
+		t.Fatalf("expected 1 summary line, got %d: %q", len(lines), stderr)
+	}
+	if lines[0] != "3 symbol replacements" {
+		t.Errorf("stderr: got %q, want %q", lines[0], "3 symbol replacements")
+	}
+}
+
+// RT-14.4: Existing quote, dash, and ellipsis mappings retain ASCII forms
+// User action: pipe text containing smart quotes, dashes, and ellipsis through `sanitize symbols`
+// User observes: stdout contains straight quotes, Pandoc-style dashes, and three dots
+func TestCLI_SymbolsExistingTypographicMappings_ASCIIOutput_RT14_4(t *testing.T) {
+	got, _ := runSymbols(t, "\u201cword\u201d\u2014\u2018item\u2019\u2013done\u2026\n")
+	want := "\"word\"---'item'--done...\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-14.5: Bullet lines and arrows are both sanitized on the same line
+// User action: pipe a bullet-prefixed line containing a Unicode arrow through `sanitize symbols`
+// User observes: stdout contains a hyphen list item and ASCII arrow notation
+func TestCLI_SymbolsBulletLineWithArrow_ASCIIOutput_RT14_5(t *testing.T) {
+	got, _ := runSymbols(t, "\u2022\tleft \u2192 right\n")
+	want := "- left -> right\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-14.6: Unicode arrows inside Markdown fenced blocks are protected
+// User action: pipe a Markdown document with arrows inside and outside a fenced block
+// User observes: arrows inside the block are preserved and arrows outside use ASCII notation
+func TestCLI_FencedBlock_ArrowsSkipped_RT14_6(t *testing.T) {
+	input := "outside \u2192 ascii\n```\ninside \u2192 unicode\n```\noutside \u21d2 ascii\n"
+	got := runSanitize(t, input)
+	want := "outside -> ascii\n```\ninside \u2192 unicode\n```\noutside => ascii\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-14.7: Unicode arrows inside inline backticks are protected
+// User action: pipe a line with arrows inside and outside an inline code span
+// User observes: arrows inside the span are preserved and arrows outside use ASCII notation
+func TestCLI_InlineCode_ArrowsSkipped_RT14_7(t *testing.T) {
+	input := "outside \u2192 ascii `inside \u21d2 unicode` outside \u2194 ascii\n"
+	got := runSanitize(t, input)
+	want := "outside -> ascii `inside \u21d2 unicode` outside <-> ascii\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-14.8: Unicode arrows inside org-mode source blocks are protected
+// User action: pipe an org-mode document with arrows inside and outside a source block
+// User observes: arrows inside the block are preserved and arrows outside use ASCII notation
+func TestCLI_OrgSrcBlock_ArrowsSkipped_RT14_8(t *testing.T) {
+	input := "outside \u2190 ascii\n#+BEGIN_SRC\ninside \u21d0 unicode\n#+END_SRC\noutside \u27f6 ascii\n"
+	got := runSanitize(t, input)
+	want := "outside <- ascii\n#+BEGIN_SRC\ninside \u21d0 unicode\n#+END_SRC\noutside --> ascii\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
