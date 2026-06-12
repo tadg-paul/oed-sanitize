@@ -27,8 +27,8 @@ var charReplacements = []struct {
 	{"\u201d", `"`},  // right double quote
 	{"\u2018", "'"},  // left single quote
 	{"\u2019", "'"},  // right single quote
-	{"\u2014", "-"},  // em dash
-	{"\u2013", "-"},  // en dash
+	{"\u2014", "---"},  // em dash
+	{"\u2013", "--"},  // en dash
 	{"\u2026", "..."}, // ellipsis
 	{"\u2192", "->"},  // arrow
 }
