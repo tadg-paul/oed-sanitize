@@ -1,11 +1,11 @@
-<!-- Version: 1.0 | Last updated: 2026-06-12 -->
+<!-- Version: 1.1 | Last updated: 2026-07-08 -->
 
 # Acceptance Criteria
 
 This is the canonical spec. ACs introduced from 2026-06-12 onward live here.
 Pre-cutover ACs remain in their originating issues until cited or migrated.
 
-Last migrated: AC14.3 from #14 on 2026-06-12
+Last migrated: AC15.1 from #15 on 2026-07-08
 
 ---
 
@@ -34,5 +34,16 @@ Last migrated: AC14.3 from #14 on 2026-06-12
   - ✅ RT-14.6: A Markdown fenced block containing Unicode arrows preserves those arrows while arrows outside the fence use ASCII notation.
   - ✅ RT-14.7: An inline backtick span containing Unicode arrows preserves those arrows while arrows outside the span use ASCII notation.
   - ✅ RT-14.8: An org-mode source block containing Unicode arrows preserves those arrows while arrows outside the block use ASCII notation.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+## OED Spelling Sanitization
+
+### AC15.1 - Given OED spelling conversion is active, common misspelled recognizable-family variants have the OED spelling in stdout.
+- Introduced: #15 (closed 2026-07-08)
+- Tests:
+  - ✅ RT-15.1: `recognizeable`, `recognizeably`, and `recognizeability` through the CLI become `recognizable`, `recognizably`, and `recognizability`.
+  - ✅ RT-15.2: `recogniseable`, `recogniseably`, and `recogniseability` through the CLI become `recognizable`, `recognizably`, and `recognizability`.
+  - ✅ RT-15.3: `unrecognizeable`, `unrecogniseably`, and `Unrecogniseability` through the CLI become `unrecognizable`, `unrecognizably`, and `Unrecognizability`.
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
