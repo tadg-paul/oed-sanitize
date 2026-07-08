@@ -1,11 +1,11 @@
-<!-- Version: 1.1 | Last updated: 2026-07-08 -->
+<!-- Version: 1.2 | Last updated: 2026-07-09 -->
 
 # Acceptance Criteria
 
 This is the canonical spec. ACs introduced from 2026-06-12 onward live here.
 Pre-cutover ACs remain in their originating issues until cited or migrated.
 
-Last migrated: AC15.1 from #15 on 2026-07-08
+Last migrated: AC17.2 from #17 on 2026-07-09
 
 ---
 
@@ -45,5 +45,21 @@ Last migrated: AC15.1 from #15 on 2026-07-08
   - ✅ RT-15.1: `recognizeable`, `recognizeably`, and `recognizeability` through the CLI become `recognizable`, `recognizably`, and `recognizability`.
   - ✅ RT-15.2: `recogniseable`, `recogniseably`, and `recogniseability` through the CLI become `recognizable`, `recognizably`, and `recognizability`.
   - ✅ RT-15.3: `unrecognizeable`, `unrecogniseably`, and `Unrecogniseability` through the CLI become `unrecognizable`, `unrecognizably`, and `Unrecognizability`.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC17.1 - Given OED spelling conversion is active, possessive suffixes do not prevent mapped base words from using OED spelling in stdout.
+- Introduced: #17 (closed 2026-07-09)
+- Tests:
+  - ✅ RT-17.1: `color's` and `neighbor's` through the CLI become `colour's` and `neighbour's`.
+  - ✅ RT-17.2: `organise's` and `Recognise's` through the CLI become `organize's` and `Recognize's`.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC17.2 - Given OED spelling conversion is active, apostrophes inside words that are not possessive suffixes remain part of the lookup token and do not create partial-word conversions.
+- Introduced: #17 (closed 2026-07-09)
+- Tests:
+  - ✅ RT-17.3: A contraction-like token containing a mapped prefix remains unchanged unless the full token is explicitly mapped.
+  - ✅ RT-17.4: A plural possessive suffix after a mapped plural base preserves the trailing apostrophe.
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
