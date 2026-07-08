@@ -900,3 +900,53 @@ func TestCLI_UnrecognizeableVariants_OEDOutput_RT15_3(t *testing.T) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
+
+// --- Issue #17: possessive suffix word boundaries ---
+
+// RT-17.1: Possessive suffixes do not block US-to-UK base-word conversion
+// User action: pipe possessive words with mapped base words through `sanitize oed`
+// User observes: stdout converts the base word and preserves the possessive suffix
+func TestCLI_PossessiveUSWords_OEDOutput_RT17_1(t *testing.T) {
+	input := "color's neighbor's\n"
+	got := runSanitize(t, input)
+	want := "colour's neighbour's\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-17.2: Possessive suffixes do not block -ise-to-ize base-word conversion
+// User action: pipe possessive -ise words through `sanitize oed`
+// User observes: stdout converts the base word, preserves case, and preserves the suffix
+func TestCLI_PossessiveIseWords_OEDOutput_RT17_2(t *testing.T) {
+	input := "organise's Recognise\u2019s\n"
+	got := runSanitize(t, input)
+	want := "organize's Recognize's\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-17.3: Non-possessive apostrophe tokens are not partially converted
+// User action: pipe an apostrophe-containing token that is not a possessive suffix
+// User observes: stdout leaves the token unchanged
+func TestCLI_NonPossessiveApostropheToken_Unchanged_RT17_3(t *testing.T) {
+	input := "color'd\n"
+	got := runSanitize(t, input)
+	want := "color'd\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-17.4: Plural possessive suffixes do not block mapped plural base words
+// User action: pipe plural possessive words with mapped plural base words through `sanitize oed`
+// User observes: stdout converts the plural base word and preserves the trailing apostrophe
+func TestCLI_PluralPossessiveWords_OEDOutput_RT17_4(t *testing.T) {
+	input := "colors' neighbors\u2019\n"
+	got := runSanitize(t, input)
+	want := "colours' neighbours'\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
