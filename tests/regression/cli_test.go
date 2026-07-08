@@ -862,3 +862,41 @@ func TestCLI_OrgSrcBlock_ArrowsSkipped_RT14_8(t *testing.T) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
+
+// --- Issue #15: recognizable misspelling dictionary entries ---
+
+// RT-15.1: Common recognizable misspellings are converted to OED spelling
+// User action: pipe text containing recognizeable variants through `sanitize oed`
+// User observes: stdout contains recognizable, recognizably, and recognizability
+func TestCLI_RecognizeableVariants_OEDOutput_RT15_1(t *testing.T) {
+	input := "recognizeable recognizeably recognizeability\n"
+	got := runSanitize(t, input)
+	want := "recognizable recognizably recognizability\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-15.2: Common recogniseable misspellings are converted to OED spelling
+// User action: pipe text containing recogniseable variants through `sanitize oed`
+// User observes: stdout contains recognizable, recognizably, and recognizability
+func TestCLI_RecogniseableVariants_OEDOutput_RT15_2(t *testing.T) {
+	input := "recogniseable recogniseably recogniseability\n"
+	got := runSanitize(t, input)
+	want := "recognizable recognizably recognizability\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-15.3: Unrecognizable misspellings and title case are converted to OED spelling
+// User action: pipe text containing unrecognizeable variants through `sanitize oed`
+// User observes: stdout contains unrecognizable variants and title case is preserved
+func TestCLI_UnrecognizeableVariants_OEDOutput_RT15_3(t *testing.T) {
+	input := "unrecognizeable unrecogniseably Unrecogniseability\n"
+	got := runSanitize(t, input)
+	want := "unrecognizable unrecognizably Unrecognizability\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
