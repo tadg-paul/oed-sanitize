@@ -11,8 +11,8 @@ import (
 // OEDEngine holds separate lookup maps for US→UK spelling and -ise→-ize
 // corrections, tracking replacement counts independently.
 type OEDEngine struct {
-	spelling map[string]string
-	ize      map[string]string
+	spelling        map[string]string
+	ize             map[string]string
 	SpellingChanges int
 	IzeChanges      int
 }
@@ -81,22 +81,61 @@ func (e *OEDEngine) ProcessLine(line string) string {
 
 // isWordChar returns true for letters and apostrophes (word-internal).
 func isWordChar(r rune) bool {
-	return unicode.IsLetter(r) || r == '\''
+	return unicode.IsLetter(r) || r == '\'' || r == '\u2019'
 }
 
 // replaceWord looks up a word in both maps and applies case-preserving
 // replacement, incrementing the appropriate counter.
 func (e *OEDEngine) replaceWord(word string) string {
+	if replacement, category, ok := e.lookupWord(word); ok {
+		e.incrementChanges(category)
+		return applyCase(word, replacement)
+	}
+
+	base, suffix, hasPossessive := splitPossessive(word)
+	if !hasPossessive {
+		return word
+	}
+
+	if replacement, category, ok := e.lookupWord(base); ok {
+		e.incrementChanges(category)
+		return applyCase(base, replacement) + suffix
+	}
+
+	return word
+}
+
+// lookupWord returns a replacement and counter category for an exact word.
+func (e *OEDEngine) lookupWord(word string) (string, string, bool) {
 	lower := strings.ToLower(word)
 	if replacement, ok := e.spelling[lower]; ok {
-		e.SpellingChanges++
-		return applyCase(word, replacement)
+		return replacement, "spelling", true
 	}
 	if replacement, ok := e.ize[lower]; ok {
-		e.IzeChanges++
-		return applyCase(word, replacement)
+		return replacement, "ize", true
 	}
-	return word
+	return "", "", false
+}
+
+// incrementChanges records a replacement in the matching change counter.
+func (e *OEDEngine) incrementChanges(category string) {
+	if category == "spelling" {
+		e.SpellingChanges++
+		return
+	}
+	if category == "ize" {
+		e.IzeChanges++
+	}
+}
+
+// splitPossessive separates a trailing possessive suffix from a word.
+func splitPossessive(word string) (string, string, bool) {
+	for _, suffix := range []string{"'s", "\u2019s", "'", "\u2019"} {
+		if strings.HasSuffix(word, suffix) && len(word) > len(suffix) {
+			return word[:len(word)-len(suffix)], suffix, true
+		}
+	}
+	return word, "", false
 }
 
 // applyCase transfers the case pattern of orig onto replacement.
