@@ -612,7 +612,6 @@ totaling=totalling
 toweled=towelled
 toweling=towelling
 toxemia=toxaemia
-tranquility=tranquillity
 tranquilize=tranquillize
 tranquilized=tranquillized
 tranquilizer=tranquillizer

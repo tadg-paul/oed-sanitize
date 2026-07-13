@@ -950,3 +950,17 @@ func TestCLI_PluralPossessiveWords_OEDOutput_RT17_4(t *testing.T) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
+
+// --- Issue #18: unsafe dictionary mapping removal ---
+
+// RT-18.1: Tranquility is not rewritten by OED conversion
+// User action: pipe lowercase and title-case forms through `sanitize oed`
+// User observes: stdout preserves both forms unchanged
+func TestCLI_Tranquility_Unchanged_RT18_1(t *testing.T) {
+	input := "tranquility Tranquility\n"
+	got := runSanitize(t, input)
+	want := "tranquility Tranquility\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
