@@ -964,3 +964,39 @@ func TestCLI_Tranquility_Unchanged_RT18_1(t *testing.T) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
+
+// RT-18.2: Reviewed source spellings with checker-rejected targets remain unchanged
+// User action: pipe the reviewed source spellings through `sanitize oed`
+// User observes: stdout preserves every source spelling
+func TestCLI_AcceptedSourcesRejectedTargets_Unchanged_RT18_2(t *testing.T) {
+	words := []string{
+		"aerogram", "aerograms", "aggrandizement", "caliper", "calipers",
+		"centigram", "centigrams", "cesarean", "cesareans", "encyclopedia",
+		"encyclopedias", "encyclopedic", "fetal", "fetid", "fetus", "fetuses",
+		"griffin", "griffins", "homeopath", "homeopathic", "homeopaths",
+		"homeopathy", "journaling", "kilogram", "kilograms", "milligram",
+		"milligrams", "mustachioed", "pederast", "pederasts", "persnickety",
+		"primeval", "scalawag", "technicolor",
+	}
+	input := strings.Join(words, " ") + "\n"
+	got := runSanitize(t, input)
+	if got != input {
+		t.Errorf("got %q, want unchanged input %q", got, input)
+	}
+}
+
+// RT-18.3: Reviewed source spellings with checker-accepted targets remain unchanged
+// User action: pipe the reviewed source spellings through `sanitize oed`
+// User observes: stdout preserves every source spelling
+func TestCLI_AcceptedSourcesAcceptedTargets_Unchanged_RT18_3(t *testing.T) {
+	words := []string{
+		"bevies", "bevy", "checkered", "counter-clockwise", "counterclockwise",
+		"filet", "formulas", "hauler", "micrometer", "micrometers", "phony",
+		"sanitarium",
+	}
+	input := strings.Join(words, " ") + "\n"
+	got := runSanitize(t, input)
+	if got != input {
+		t.Errorf("got %q, want unchanged input %q", got, input)
+	}
+}
