@@ -82,8 +82,8 @@ I speak Hiberno-English. I follow the OED because it offers the least ambiguity 
 ├── cmd/sanitize/main.go      # CLI entry point
 ├── pkg/spelling/              # Spelling conversion logic
 ├── data/
-│   ├── us-to-uk.txt           # US → UK word pairs (721 entries)
-│   └── ise-to-ize.txt         # -ise → -ize word pairs (1,213 entries)
+│   ├── us-to-uk.txt           # US → UK word pairs (608 entries)
+│   └── ise-to-ize.txt         # -ise → -ize word pairs (1,225 entries)
 ├── docs/
 │   ├── vision.md              # Project vision and goals
 │   ├── architecture.md        # Technical architecture

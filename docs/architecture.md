@@ -1,4 +1,4 @@
-<!-- Version: 1.1 | Last updated: 2026-06-12 -->
+<!-- Version: 1.2 | Last updated: 2026-07-14 -->
 
 # Architecture
 
@@ -65,14 +65,14 @@ Two embedded word lists in `data/`:
 
 | File | Entries | Purpose |
 |------|---------|---------|
-| `us-to-uk.txt` | 721 | US → UK spelling (center→centre, analyze→analyse) |
-| `ise-to-ize.txt` | 1,213 | Non-OED British -ise → OED -ize (organise→organize) |
+| `us-to-uk.txt` | 608 | US → UK spelling (center→centre, analyze→analyse) |
+| `ise-to-ize.txt` | 1,225 | Non-OED British -ise → OED -ize (organise→organize) |
 
 Both use `wrong=correct` format, one pair per line. Comments (`#`) and blank lines are ignored.
 
 ### Lookup strategy
 
-At startup, both word lists are parsed into a single `map[string]string` (lowercase key → lowercase value). At ~2,000 entries this is trivially fast and uses negligible memory.
+At startup, both word lists are parsed into a single `map[string]string` (lowercase key → lowercase value). At ~1,800 entries this is trivially fast and uses negligible memory.
 
 For each word in the input text:
 1. Extract the word (contiguous letters/apostrophes)
@@ -175,4 +175,5 @@ oed-sanitize/
 
 ## Changelog
 
+- 1.2 (2026-07-14): Updated dictionary entry counts after the ambiguity audit.
 - 1.1 (2026-06-12): Documented Pandoc-style dash output and expanded horizontal arrow mappings.
