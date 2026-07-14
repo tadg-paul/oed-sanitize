@@ -1,11 +1,11 @@
-<!-- Version: 1.2 | Last updated: 2026-07-09 -->
+<!-- Version: 1.3 | Last updated: 2026-07-14 -->
 
 # Acceptance Criteria
 
 This is the canonical spec. ACs introduced from 2026-06-12 onward live here.
 Pre-cutover ACs remain in their originating issues until cited or migrated.
 
-Last migrated: AC17.2 from #17 on 2026-07-09
+Last migrated: AC18.4 from #18 on 2026-07-14
 
 ---
 
@@ -61,5 +61,34 @@ Last migrated: AC17.2 from #17 on 2026-07-09
 - Tests:
   - ✅ RT-17.3: A contraction-like token containing a mapped prefix remains unchanged unless the full token is explicitly mapped.
   - ✅ RT-17.4: A plural possessive suffix after a mapped plural base preserves the trailing apostrophe.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC18.1 - Given OED conversion is active, tranquility remains unchanged in stdout.
+- Introduced: #18 (closed 2026-07-14)
+- Tests:
+  - ✅ RT-18.1: Lowercase and title-case forms pass through the CLI unchanged.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC18.2 - Given the two conversion dictionaries, every right-hand-side value has an auditable acceptance or rejection result from the pinned Oxford-spelling checker.
+- Introduced: #18 (closed 2026-07-14)
+- Tests:
+  - ✅ OT-18.1: Extract all right-hand-side values and record Hunspell rejections for review.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC18.3 - Given the US-to-UK conversion dictionary, every left-hand-side value accepted by the pinned Oxford-spelling checker is inventoried for manual ambiguity review without automatic dictionary changes.
+- Introduced: #18 (closed 2026-07-14)
+- Tests:
+  - ✅ OT-18.2: Extract all US-to-UK left-hand-side values and record checker-accepted mappings for review.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC18.4 - Given OED conversion is active, the 46 reviewed source spellings accepted by the Oxford-spelling checker remain unchanged in stdout.
+- Introduced: #18 (closed 2026-07-14)
+- Tests:
+  - ✅ RT-18.2: The 34 reviewed source spellings whose targets were rejected pass through the CLI unchanged.
+  - ✅ RT-18.3: The 12 reviewed source spellings whose targets were accepted pass through the CLI unchanged.
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
