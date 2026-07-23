@@ -1,6 +1,12 @@
 # Local Claude Code config
 CLAUDE.md
 
+# Agent runtime state
+.agent/
+.agents/
+.claude/
+.codex/
+
 # Build output
 /sanitize
 
