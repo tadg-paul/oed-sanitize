@@ -105,4 +105,4 @@ Format: `wrong_spelling=correct_spelling`, one per line. Lines starting with `#`
 
 ## Licence
 
-MIT. Copyright Tadg Paul.
+MIT. Copyright Tadhg O'Brien.
