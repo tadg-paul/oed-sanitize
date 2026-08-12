@@ -863,6 +863,68 @@ func TestCLI_OrgSrcBlock_ArrowsSkipped_RT14_8(t *testing.T) {
 	}
 }
 
+// --- Issue #13: org-mode inline verbatim protection ---
+
+// RT-13.1: OED-correctable words inside org-mode verbatim spans are protected
+// User action: pipe an org-mode line containing =organise= through sanitize
+// User observes: the word inside the verbatim span remains unchanged
+func TestCLI_OrgVerbatim_OEDSkipped_RT13_1(t *testing.T) {
+	input := "Org =organise=, not organise\n"
+	got := runSanitize(t, input)
+	want := "Org =organise=, not organize\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-13.2: Typographic symbols inside org-mode verbatim spans are protected
+// User action: pipe arrows inside and outside an org-mode verbatim span
+// User observes: the enclosed arrow is preserved while the outside arrow is sanitized
+func TestCLI_OrgVerbatim_SymbolsSkipped_RT13_2(t *testing.T) {
+	input := "Org =inside \u2192 unicode= outside \u2192 ascii\n"
+	got := runSanitize(t, input)
+	want := "Org =inside \u2192 unicode= outside -> ascii\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-13.19: Text surrounding org-mode verbatim spans remains eligible for sanitization
+// User action: pipe correctable prose around an org-mode verbatim span
+// User observes: surrounding prose is corrected while verbatim content is unchanged
+func TestCLI_OrgVerbatim_SurroundingTextCorrected_RT13_19(t *testing.T) {
+	input := "organise =organise= center\n"
+	got := runSanitize(t, input)
+	want := "organize =organise= centre\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-13.20: Multiple org-mode verbatim spans on one line are protected
+// User action: pipe a line containing multiple verbatim spans through sanitize
+// User observes: every span is unchanged while text between the spans is corrected
+func TestCLI_OrgVerbatim_MultipleSpansProtected_RT13_20(t *testing.T) {
+	input := "=organise= center =color \u2192=\n"
+	got := runSanitize(t, input)
+	want := "=organise= centre =color \u2192=\n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+// RT-13.21: Equals signs outside valid org-mode verbatim boundaries remain ordinary text
+// User action: pipe expressions and unclosed markers containing correctable words
+// User observes: invalid spans do not protect words from sanitization
+func TestCLI_OrgVerbatim_InvalidBoundariesNotProtected_RT13_21(t *testing.T) {
+	input := "x = organise and word=organise=word and =organise \n"
+	got := runSanitize(t, input)
+	want := "x = organize and word=organize=word and =organize \n"
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
 // --- Issue #15: recognizable misspelling dictionary entries ---
 
 // RT-15.1: Common recognizable misspellings are converted to OED spelling
