@@ -1,4 +1,4 @@
-<!-- Version: 1.2 | Last updated: 2026-07-14 -->
+<!-- Version: 1.3 | Last updated: 2026-08-12 -->
 
 # Architecture
 
@@ -46,6 +46,7 @@ This order is fixed regardless of subcommand order on the command line.
 
 ```
 stdin → bufio.Scanner (line-by-line)
+     → protect Markdown code and org-mode literal regions
      → [if oed] spelling replacements (map lookup, case-preserving)
      → [if symbols] character replacements
      → stdout
@@ -56,6 +57,8 @@ stderr ← change summary (unless -q)
 ### Line-by-line processing
 
 Text is processed line by line via `bufio.Scanner`. This keeps memory usage constant regardless of input size and preserves line structure exactly.
+
+Before either engine runs, the CLI exempts Markdown fenced blocks, Markdown inline backticks, org-mode source blocks, and valid org-mode `=verbatim=` spans. Inline verbatim recognition follows org-mode boundary rules so ordinary equals signs and expressions remain eligible for sanitization.
 
 ## Spelling engine (`oed` subcommand)
 
@@ -175,5 +178,6 @@ oed-sanitize/
 
 ## Changelog
 
+- 1.3 (2026-08-12): Documented org-mode inline verbatim protection.
 - 1.2 (2026-07-14): Updated dictionary entry counts after the ambiguity audit.
 - 1.1 (2026-06-12): Documented Pandoc-style dash output and expanded horizontal arrow mappings.

@@ -33,14 +33,15 @@ echo 'I need to "organise" the center…' | sanitize oed symbols
 
 Subcommands can be combined in any order. Running `sanitize` with no subcommands defaults to applying both `oed` and `symbols`.
 
-## Code block protection
+## Protected content
 
-Content inside code blocks is never modified. This means technical documents, READMEs, and literate programs can be safely piped through `sanitize` without breaking code examples.
+Content inside recognized literal regions is never modified. This means technical documents, READMEs, and literate programs can be safely piped through `sanitize` without breaking literal examples.
 
-Supported code block formats:
+Supported formats:
 - **Markdown fenced blocks** — `` ``` `` or `` ```language ``
 - **Inline backtick spans** — `` `code here` ``
 - **Org-mode source blocks** — `#+BEGIN_SRC` / `#+END_SRC` (case-insensitive)
+- **Org-mode verbatim spans** — `=verbatim=` with standard Org boundary rules
 
 ## Flags
 
