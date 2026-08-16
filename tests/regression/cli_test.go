@@ -295,6 +295,118 @@ func TestCLI_HelpFlag_ExitsZeroWithUsage_RT034(t *testing.T) {
 	}
 }
 
+const expectedHelp = `sanitize converts English text from stdin and writes the transformed text to
+stdout. It normalizes selected US and British -ise spellings to Oxford spelling
+and replaces common typographic symbols with ASCII equivalents. It is not a
+spell checker.
+
+With no subcommands, both oed and symbols are applied.
+
+usage: sanitize <subcommand> [<subcommand>...] [flags]
+
+Subcommands:
+  oed       Convert US spellings and non-OED -ise spellings to Oxford spelling
+  symbols   Convert typographic characters to ASCII
+
+Protected content:
+  Markdown fenced code blocks   ` + "``` ... ```" + `
+  Markdown inline code spans    ` + "`...`" + `
+  Org source blocks             #+BEGIN_SRC ... #+END_SRC
+  Org verbatim spans            =...=
+
+Text inside protected content passes through unchanged.
+
+Flags:
+  -q          Suppress change summary on stderr
+  -h, --help  Print this help message
+  --version   Print version
+`
+
+func runHelp(t *testing.T, dir string, flag string) string {
+	t.Helper()
+
+	cmd := exec.Command(binaryPath(t), flag)
+	cmd.Dir = dir
+	out, err := cmd.Output()
+	if err != nil {
+		t.Fatalf("%s failed: %v", flag, err)
+	}
+	return string(out)
+}
+
+// RT-20.1: --help exposes the complete help contract
+// User action: run sanitize --help
+// User observes: stdout describes operation, transformations, defaults, limitations, and usage
+func TestCLI_LongHelpFlag_DisplaysCompleteContract_RT20_1(t *testing.T) {
+	got := runHelp(t, "", "--help")
+	if got != expectedHelp {
+		t.Errorf("got %q, want %q", got, expectedHelp)
+	}
+}
+
+// RT-20.2: -h exposes the complete help contract
+// User action: run sanitize -h
+// User observes: stdout contains the same complete help text as the long flag
+func TestCLI_ShortHelpFlag_DisplaysCompleteContract_RT20_2(t *testing.T) {
+	got := runHelp(t, "", "-h")
+	if got != expectedHelp {
+		t.Errorf("got %q, want %q", got, expectedHelp)
+	}
+}
+
+// RT-20.3: help names every currently protected content form
+// User action: run sanitize --help
+// User observes: help lists Markdown fences, backticks, Org source blocks, and Org verbatim spans
+func TestCLI_Help_ListsProtectedContent_RT20_3(t *testing.T) {
+	got := runHelp(t, "", "--help")
+	required := []string{
+		"Markdown fenced code blocks   ``` ... ```",
+		"Markdown inline code spans    `...`",
+		"Org source blocks             #+BEGIN_SRC ... #+END_SRC",
+		"Org verbatim spans            =...=",
+	}
+	for _, item := range required {
+		if !strings.Contains(got, item) {
+			t.Errorf("help missing %q", item)
+		}
+	}
+}
+
+// RT-20.4: packaged help is independent of the repository working directory
+// User action: run the compiled binary from an unrelated temporary directory
+// User observes: complete help remains available without project files
+func TestCLI_Help_OutsideRepository_RT20_4(t *testing.T) {
+	got := runHelp(t, t.TempDir(), "--help")
+	if got != expectedHelp {
+		t.Errorf("got %q, want %q", got, expectedHelp)
+	}
+}
+
+// RT-20.5: packaged help matches its documentation source
+// User action: compare sanitize --help with the maintained help document
+// User observes: the executable and documentation expose identical text
+func TestCLI_Help_MatchesDocumentationSource_RT20_5(t *testing.T) {
+	documented, err := os.ReadFile(filepath.Join("..", "..", "docs", "sanitize-help.md"))
+	if err != nil {
+		t.Fatalf("reading documented help: %v", err)
+	}
+	got := runHelp(t, "", "--help")
+	if got != string(documented) {
+		t.Errorf("got %q, want documented help %q", got, string(documented))
+	}
+}
+
+// RT-20.6: both help flags expose the same packaged document
+// User action: run both documented help flags
+// User observes: -h and --help have byte-identical stdout
+func TestCLI_HelpFlags_DisplaySameDocument_RT20_6(t *testing.T) {
+	short := runHelp(t, "", "-h")
+	long := runHelp(t, "", "--help")
+	if short != long {
+		t.Errorf("-h output %q differs from --help output %q", short, long)
+	}
+}
+
 // RT-035: --version exits 0 with version string
 func TestCLI_VersionFlag_ExitsZeroWithVersion_RT035(t *testing.T) {
 	bin := binaryPath(t)
