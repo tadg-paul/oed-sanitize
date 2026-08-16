@@ -1,11 +1,11 @@
-<!-- Version: 1.3 | Last updated: 2026-07-14 -->
+<!-- Version: 1.4 | Last updated: 2026-08-16 -->
 
 # Acceptance Criteria
 
 This is the canonical spec. ACs introduced from 2026-06-12 onward live here.
 Pre-cutover ACs remain in their originating issues until cited or migrated.
 
-Last migrated: AC18.4 from #18 on 2026-07-14
+Last migrated: AC20.3 from #20 on 2026-08-16
 
 ---
 
@@ -34,6 +34,32 @@ Last migrated: AC18.4 from #18 on 2026-07-14
   - ✅ RT-14.6: A Markdown fenced block containing Unicode arrows preserves those arrows while arrows outside the fence use ASCII notation.
   - ✅ RT-14.7: An inline backtick span containing Unicode arrows preserves those arrows while arrows outside the span use ASCII notation.
   - ✅ RT-14.8: An org-mode source block containing Unicode arrows preserves those arrows while arrows outside the block use ASCII notation.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+## CLI Help
+
+### AC20.1 - Given CLI help mode is active, the help text describes stdin/stdout operation, both transformation modes, default combined operation, and the distinction from spell checking.
+- Introduced: #20 (closed 2026-08-16)
+- Tests:
+  - ✅ RT-20.1: `--help` displays the complete approved help contract and exits successfully.
+  - ✅ RT-20.2: `-h` displays the same complete help contract and exits successfully.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC20.2 - Given CLI help mode is active, the help text identifies Markdown fenced blocks, Markdown inline code spans, Org source blocks, and Org verbatim spans as protected content that passes through unchanged.
+- Introduced: #20 (closed 2026-08-16)
+- Tests:
+  - ✅ RT-20.3: The help contract names all four protected forms and their representative delimiters.
+  - ✅ RT-20.4: The packaged binary displays the protected-content help when run outside the repository.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+### AC20.3 - Given the documented help source under `docs/`, packaged CLI help is identical to that source.
+- Introduced: #20 (closed 2026-08-16)
+- Tests:
+  - ✅ RT-20.5: CLI help output matches the documentation source byte-for-byte.
+  - ✅ RT-20.6: Both help flags expose the same packaged documentation source.
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
 
