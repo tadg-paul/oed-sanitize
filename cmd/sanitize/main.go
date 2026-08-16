@@ -9,22 +9,12 @@ import (
 	"strings"
 
 	"github.com/tigger-developer/oed-sanitize/data"
+	"github.com/tigger-developer/oed-sanitize/docs"
 	"github.com/tigger-developer/oed-sanitize/pkg/spelling"
 )
 
 // version is set at build time via -ldflags.
 var version = "dev"
-
-const usageText = `usage: sanitize <subcommand> [<subcommand>...] [flags]
-
-Subcommands:
-  oed       Convert US→UK and -ise→-ize spellings
-  symbols   Convert typographic characters to ASCII
-
-Flags:
-  -q          Suppress change summary on stderr
-  -h, --help  Print this help message
-  --version   Print version`
 
 func main() {
 	var doOED bool
@@ -40,7 +30,7 @@ func main() {
 		case "-q":
 			quiet = true
 		case "-h", "--help":
-			fmt.Println(usageText)
+			fmt.Print(docs.SanitizeHelp)
 			os.Exit(0)
 		case "--version":
 			fmt.Printf("sanitize %s\n", version)
